@@ -1,0 +1,122 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Movies</title>
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+<script type="text/javascript">
+		var movies =[];
+		var checkouts =[];
+	$(document).ready(function(){
+		$.get('http://159.203.175.239:9001/checkouts.txt', function(rawCheckouts){
+				rawCheckouts = rawCheckouts.split('\n');
+				for(var i = 0; i < rawCheckouts.length; i++){
+					checkouts.push(rawCheckouts[i].split(' '));
+				}
+				console.log(num1MovieWatcher(checkouts));
+				console.log(highestMonth(checkouts));
+				// console.log(highestTitleId(checkouts));
+				$.get('http://159.203.175.239:9001/movies.txt', function(rawMovies){
+					rawMovies = rawMovies.split('\n');
+					for(var i = 0; i < rawMovies.length; i++){
+					movies.push(rawMovies[i].split(' '));
+				}
+					console.log(highestTitleId(checkouts, movies));
+				});
+				
+		});
+		function num1MovieWatcher (checkouts){
+				var count = {};
+				var i, j;
+				var maxcount = 1;
+				var maxUser = checkouts[0][0];
+			//count the numbers of users, into movie watches
+			for (i = 0; i < checkouts.length; i++) {
+				if (count[checkouts[i][0]] === undefined) {
+					count[checkouts[i][0]] = 0;
+				}
+				count[checkouts[i][0]] += 1;
+			}
+			//find the max user in the counts array
+			for (var userId in count) {
+				if (count[userId] > maxcount) {
+					maxcount = count[userId];
+					maxUser = userId;
+				}
+			}
+			return maxUser;
+		}
+
+		function highestMonth(checkouts){
+				var count={};
+				var maxcount=1;
+				var maxMonth = checkouts[0][1];
+			for (i = 0; i < checkouts.length; i++) {
+				if (count[checkouts[i][1]] === undefined) {
+					count[checkouts[i][1]] = 0;
+				}
+				count[checkouts[i][1]] += 1;
+			}
+			for (var month in count) {
+				if (count[month] > maxcount) {
+					maxcount = count[month];
+					maxMonth = month;
+				}
+			}
+			return maxMonth;
+		}
+// to get the title of the movie that was most checked out
+		function highestTitleId(checkouts, movies){  
+				var count={};
+				var maxcount=1;
+				var maxTitle = checkouts[0][2];
+				var movieTitle =[];
+			for (i = 0; i < checkouts.length; i++) {
+				if (count[checkouts[i][2]] === undefined) {
+					count[checkouts[i][2]] = 0;
+				}
+				count[checkouts[i][2]] += 1;
+			}
+			for (var title in count) {
+				if (count[title] > maxcount) {
+					maxcount = count[title];
+					maxTitle = title;
+				}
+			}
+			for(var m = 0; m < movies.length; m++){
+				if(movies[m][0]=== maxTitle){
+				 movieTitle.push(movies[m].splice(1,3).join(' '));
+				}
+			}
+			return movieTitle;
+		}
+	});
+
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
